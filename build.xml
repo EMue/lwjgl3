@@ -821,21 +821,7 @@
         </java>
     </target>
 
-    <target name="upload-native" description="Uploads native build artifacts to build.lwjgl.org" depends="compile-native">
-        <fail message="AWS credentials not configured.">
-            <condition>
-                <not>
-                    <or>
-                        <and>
-                            <isset property="env.AWS_ACCESS_KEY_ID"/>
-                            <isset property="env.AWS_SECRET_ACCESS_KEY"/>
-                        </and>
-                        <isset property="env.AWS_CONFIG_FILE"/>
-                    </or>
-                </not>
-            </condition>
-        </fail>
-
+    <target name="upload-native" description="Copy native build artifacts to deployment directory" depends="compile-native">
         <local name="revision"/>
         <property name="revision" value="liblwjgl.so.git" if:set="platform.linux"/>
         <property name="revision" value="liblwjgl.dylib.git" if:set="platform.macos"/>
@@ -848,14 +834,15 @@
             <arg value="HEAD~2..HEAD~1"/> <!-- Skip the CI commit -->
         </exec>
 
-        <apply executable="aws" failonerror="true" relative="true" taskname="S3 upload">
-            <arg value="s3"/>
-            <arg value="cp"/>
+        <exec executable="mkdir" failonerror="true" taskname="Deployment creation">
+            <arg value="--parents"/>
+            <arg value="deploy/"/>
+        </exec>
 
+        <apply executable="cp" failonerror="true" relative="true" taskname="Deployment copy">
             <srcfile/>
 
-            <arg value="s3://build.lwjgl.org/${build.type}/${platform.remote}/${build.arch}/"/>
-            <arg line='--acl public-read --cache-control "public, must-revalidate, proxy-revalidate, max-age=0"'/>
+            <arg value="deploy/"/>
 
             <fileset dir=".">
                 <and>
