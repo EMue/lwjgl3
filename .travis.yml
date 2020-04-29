@@ -143,11 +143,24 @@ matrix:
     - openssl aes-256-cbc -K $encrypted_3b8cb6da0fbe_key -iv $encrypted_3b8cb6da0fbe_iv -in .travis/id_rsa_deploy_travis.enc -out .travis/id_rsa_deploy_travis -d
 
     script:
+    - eval "$(ssh-agent -s)"
+    - chmod 600 .travis/id_rsa_deploy_travis
+    - ssh-add .travis/id_rsa_deploy_travis
     - export LWJGL_BUILD_TYPE=nightly
     - export LWJGL_BUILD_ARCH=ppc64le
     - curl $JDK_LINUX --output jdk8.tar.gz
     - mkdir jdk8 && tar xf jdk8.tar.gz -C jdk8 --strip-components 1
     - JAVA_HOME=$TRAVIS_BUILD_DIR/jdk8 ant compile-templates upload-native -Dgcc.version=4.8 -Dgcc.libpath.opengl=/usr/lib/powerpc64le-linux-gnu/mesa
+    - cd deploy
+    - git init
+    - git remote add origin git@github.com:EMue/lwjgl3-bin.git
+    - git fetch origin 0449e44c07e2bdf09e79f21c75a92f7d94b0e496
+    - git checkout 0449e44c07e2bdf09e79f21c75a92f7d94b0e496
+    - git branch ppc64le_nightly_lwjgl3
+    - git checkout ppc64le_nightly_lwjgl3
+    - git add *
+    - git commit -m "Deploy lwjgl3 from Travis CI."
+    - git push --force origin ppc64le_nightly_lwjgl3
 
   # -----------------
   - name: "macOS"
