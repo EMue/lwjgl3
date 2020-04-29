@@ -111,6 +111,41 @@ matrix:
     - JAVA_HOME=$TRAVIS_BUILD_DIR/jdk8 ant compile-templates upload-native -Dgcc.version=4.8 -Dgcc.libpath.opengl=/usr/lib/aarch64-linux-gnu/mesa
 
   # -----------------
+  - name: "Linux ppc64le"
+  # -----------------
+    dist: xenial
+    language: java
+    jdk: openjdk8
+
+    addons:
+      apt:
+        packages:
+        - ant
+        - gcc-4.8-powerpc64le-linux-gnu
+        - g++-4.8-powerpc64le-linux-gnu
+        - gcc-4.9-powerpc64le-linux-gnu
+        - g++-4.9-powerpc64le-linux-gnu
+        - libc6-dev-ppc64el-cross
+
+    before_install:
+    - pip install --user awscli
+    - export PATH=$PATH:$HOME/.local/bin
+    - sudo sed -i 's/deb http/deb [arch=amd64,i386] http/' /etc/apt/sources.list
+    - sudo grep "ubuntu.com/ubuntu" /etc/apt/sources.list | sudo tee /etc/apt/sources.list.d/ports.list
+    - sudo sed -i 's/amd64,i386/ppc64el,ppc64el/' /etc/apt/sources.list.d/ports.list
+    - sudo sed -i 's#http://.*/ubuntu#http://ports.ubuntu.com/ubuntu-ports#' /etc/apt/sources.list.d/ports.list
+    - sudo dpkg --add-architecture ppc64el
+    - sudo apt-get update || true
+    - sudo apt-get -yq install libglu-dev:ppc64el libgl1-mesa-glx:ppc64el libx11-dev:ppc64el -o Dpkg::Options::="--force-overwrite"
+
+    script:
+    - export LWJGL_BUILD_TYPE=nightly
+    - export LWJGL_BUILD_ARCH=ppc64le
+    - curl $JDK_LINUX --output jdk8.tar.gz
+    - mkdir jdk8 && tar xf jdk8.tar.gz -C jdk8 --strip-components 1
+    - JAVA_HOME=$TRAVIS_BUILD_DIR/jdk8 ant compile-templates upload-native -Dgcc.version=4.8 -Dgcc.libpath.opengl=/usr/lib/powerpc64le-linux-gnu/mesa
+
+  # -----------------
   - name: "macOS"
   # -----------------
     language: objective-c
