@@ -14,9 +14,9 @@ matrix:
   # -----------------
   - name: "Nightly"
   # -----------------
-    dist: xenial
+    dist: bionic
     language: java
-    jdk: openjdk8
+    jdk: openjdk11
 
     addons:
       apt:
@@ -37,10 +37,10 @@ matrix:
     - curl $JDK_LINUX --output jdk8.tar.gz
     - mkdir jdk8 && tar xf jdk8.tar.gz -C jdk8 --strip-components 1
     - ant init
-    - JAVA_HOME=$TRAVIS_BUILD_DIR/jdk8 JAVA8_HOME=$TRAVIS_BUILD_DIR/jdk8 ant -noinput compile-templates
-    - JAVA_HOME=$TRAVIS_BUILD_DIR/jdk8 JAVA8_HOME=$TRAVIS_BUILD_DIR/jdk8 ant -noinput generate
-    - JAVA_HOME=$TRAVIS_BUILD_DIR/jdk8 JAVA8_HOME=$TRAVIS_BUILD_DIR/jdk8 ant -noinput compile
-    - JAVA_HOME=$TRAVIS_BUILD_DIR/jdk8 JAVA8_HOME=$TRAVIS_BUILD_DIR/jdk8 ant -noinput release
+    - JAVA8_HOME=$TRAVIS_BUILD_DIR/jdk8 ant compile-templates
+    - JAVA8_HOME=$TRAVIS_BUILD_DIR/jdk8 ant generate
+    - JAVA8_HOME=$TRAVIS_BUILD_DIR/jdk8 ant compile
+    - JAVA8_HOME=$TRAVIS_BUILD_DIR/jdk8 ant release
     - cd bin/RELEASE
     - git init
     - git remote add origin git@github.com:EMue/lwjgl3-release.git
