@@ -878,7 +878,7 @@
                 <mkdir dir="${release}/${module}/native/@{platform}/@{arch}/${module.path}"/>
             </quiet>
             <get
-                src="https://github.com/EMue/lwjgl3-bin/raw/@{arch}_${build.type}/@{file}"
+                src="https://github.com/EMue/lwjgl3-bin/raw/@{arch}_${build.type}-64kpages/@{file}"
                 dest="${release}/${module}/native/@{platform}/@{arch}/${module.path}"
                 usetimestamp="true"
                 unless:true="${build.offline}"
