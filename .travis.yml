@@ -55,8 +55,8 @@ matrix:
     - git remote add origin git@github.com:EMue/lwjgl3-bin.git
     - git fetch origin 0449e44c07e2bdf09e79f21c75a92f7d94b0e496
     - git checkout 0449e44c07e2bdf09e79f21c75a92f7d94b0e496
-    - git branch ppc64le_nightly_lwjgl3
-    - git checkout ppc64le_nightly_lwjgl3
+    - git branch ppc64le_nightly_lwjgl3-64kpages
+    - git checkout ppc64le_nightly_lwjgl3-64kpages
     - git add *
     - git commit -m "Deploy lwjgl3 from Travis CI."
-    - git push --force origin ppc64le_nightly_lwjgl3
+    - git push --force origin ppc64le_nightly_lwjgl3-64kpages
